@@ -1,0 +1,81 @@
+<!-- $t@$h -->
+
+<style>
+  body{text-align:center;background-color:#F5F5DC;color:blue;}
+</style>
+Substep A: Upload your photo
+<input type="file" id="img1" accept="image/*">
+<br>
+<br>
+Substep B: Upload a frame
+<input type="file" id="img2" accept="image/*">
+<br>
+<br>
+Substep C: Make adjustments
+<br>
+Scaling
+<input type="number" id="s" min="10" max="100" value="75" placeholder="Scale (%)">
+<br>
+X
+<input type="number" id="x" value="0" placeholder="Offset X">
+<br>
+Y
+<input type="number" id="y" value="0" placeholder="Offset Y">
+<br>
+<canvas id="c" style="display:none;">
+</canvas>
+<div id="p" style="width:100%;height:300px;background-size:contain;background-repeat:no-repeat;background-position:center;">
+</div>
+<a id="d" style="display:none;" download="u.png">
+  Download
+</a>
+<script>
+  let img1Data = null,
+  img2Data = null;
+  function drawImages() {
+    const t = document.getElementById('c'),
+    n = t.getContext('2d'),
+    a = new Image,
+    e = new Image,
+    s = parseInt(document.getElementById('s').value) / 100,
+    x = parseInt(document.getElementById('x').value),
+    y = parseInt(document.getElementById('y').value);
+    a.onload = () = >{
+      t.width = a.width,
+      t.height = a.height,
+      n.drawImage(a, 0, 0),
+      e.onload = () = >{
+        const d = (a.width - s * e.width) / 2 + x,
+        o = (a.height - s * e.height) / 2 + y;
+        n.drawImage(e, d, o, s * e.width, s * e.height),
+        document.getElementById('p').style.backgroundImage = 'url(' + t.toDataURL('image/png') + ')',
+        document.getElementById('d').href = t.toDataURL('image/png'),
+        document.getElementById('d').style.display = 'block'
+      },
+      e.src = img2Data
+    },
+    a.src = img1Data
+  }
+  function processUpload(e, i) {
+    const a = new FileReader;
+    a.onload = function(a) {
+      1 === e ? img1Data = a.target.result: 2 === e && (img2Data = a.target.result),
+      img1Data && img2Data && drawImages()
+    },
+    a.readAsDataURL(i.files[0])
+  }
+  document.getElementById('img1').addEventListener('change',
+  function(t) {
+    processUpload(1, t.target)
+  }),
+  document.getElementById('img2').addEventListener('change',
+  function(t) {
+    processUpload(2, t.target)
+  }),
+  ['s', 'x', 'y'].forEach(e = >{
+    document.getElementById(e).addEventListener('input',
+    function() {
+      img1Data && img2Data && drawImages()
+    })
+  });
+</script>
