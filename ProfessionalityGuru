@@ -1,0 +1,39 @@
+<style>
+  body{text-align:center;background-color:#F5F5DC;color:blue;}#r{background-color:#F5F5DC;color:green;}
+</style>
+<canvas id="c" style="display:none;">
+</canvas>
+<input type="file" id="f" onchange="u()">
+<div id="r">
+</div>
+<script>
+  function u() {
+    const o = new FileReader;
+    o.onload = function(e) {
+      const i = new Image;
+      i.onload = function() {
+        const a = document.getElementById('c');
+        a.width = i.width,
+        a.height = i.height;
+        const x = a.getContext('2d');
+        x.drawImage(i, 0, 0);
+        const d = x.getImageData(0, 0, a.width, a.height).data;
+        let h = {},
+        t = 0,
+        e = 0;
+        for (let n = 0; n < d.length; n += 4) {
+          const r = Math.floor(d[n] / 50) * 50 << 16 | Math.floor(d[n + 1] / 50) * 50 << 8 | Math.floor(d[n + 2] / 50) * 50;
+          h[r] ? h[r]++:h[r] = 1
+        }
+        for (let s in h) {
+          t++;
+          const l = h[s] / (a.width * a.height);
+          e -= l * Math.log2(l)
+        }
+        document.getElementById('r').innerHTML = 'Analysis Report<br>---------------<br>Number of colors: ' + t + '<br>Entropy rating: ' + e.toFixed(2) + '<br>Image is: Professional<br>---------------<br>**Recommendation: 100 colors or less<br>**Recommendedation: Entropy ~7.5 or less'
+      },
+      i.src = e.target.result
+    },
+    o.readAsDataURL(document.getElementById('f').files[0])
+  }
+</script>
