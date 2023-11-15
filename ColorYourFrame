@@ -20,9 +20,17 @@ max = "255"
 min = "0"
 placeholder = "B"
 value = "255" > < div id = "colorPreview"
-style = "width:100%; height:20px; background-color:rgb(255,255,255);" > Substep A: Set RGB color preview < /div><p style="display:inline;"><br>Substep B: Upload base Frame </p > < input type = "file"
-id = "imgUpload" > < br > < br > < a id = "downloadLink"
-download = "YouFrame.png" > Substep C: Apply Frame Color < /a><script>document.getElementById('imgUpload').addEventListener('change',function(e){const t=document.getElementById('imgCanvas'),n=t.getContext('2d'),o=new FileReader;o.onload=function(e){const a=new Image;a.onload=function(){t.width=a.width,t.height=a.height,n.drawImage(a,0,0),updateImage()},a.src=e.target.result},o.readAsDataURL(e.target.files[0])});function updateImage(){const t=document.getElementById('imgCanvas'),n=t.getContext('2d'),r=parseInt(document.getElementById('r').value)||0,g=parseInt(document.getElementById('g').value)||0,b=parseInt(document.getElementById('b').value)||0,c=n.getImageData(0,0,t.width,t.height),d=c.data;for(let i=0;i<d.length;i+=4){const l=d[i],m=d[i+1],u=d[i+2],p=d[i+3];Math.abs(l-m)<=5&&Math.abs(l-u)<=5&&Math.abs(m-u)<=5&&l>200&&(d[i]=r,d[i+1]=g,d[i+2]=b)}n.putImageData(c,0,0),document.getElementById('downloadLink').href=t.toDataURL('image/png
+style = "width:100%; height:20px; background-color:rgb(255,255,255);" > Substep A: Set RGB color preview < /div>
+<p style="display:inline;"><br>Substep B: Upload base Frame </p > < input type = "file" id = "imgUpload" > < br > < br > < a id = "downloadLink"
+download = "YouFrame.png" > Substep C: Apply Frame Color < /a><script>document.getElementById('imgUpload').addEventListener('change',function(e){
+const t=document.getElementById('imgCanvas'),n=t.getContext('2d'),o=new FileReader;o.onload=function(e){
+const a=new Image;a.onload=function(){t.width=a.width,t.height=a.height,n.drawImage(a,0,0),updateImage()},a.src=e.target.result},o.readAsDataURL(e.target.files[0])});function updateImage(){
+    const t=document.getElementById('imgCanvas'),n=t.getContext('2d'),r=parseInt(document.getElementById('r').value)
+    ||0,g=parseInt(document.getElementById('g').value)
+    ||0,b=parseInt(document.getElementById('b').value)
+    ||0,c=n.getImageData(0,0,t.width,t.height),d=c.data;for(let i=0;i<d.length;i+=4){
+    const l=d[i],m=d[i+1],u=d[i+2],p=d[i+3];Math.abs(l-m)<=5&&Math.abs(l-u)<=5&&Math.abs(m-u)<=5&&l>200&&(d[i]=r,d[i+1]=g,d[i+2]=b)
+}n.putImageData(c,0,0),document.getElementById('downloadLink').href=t.toDataURL('image/png
 '),document.getElementById('
 downloadLink ').style.display='
 block '}['
