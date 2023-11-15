@@ -30,7 +30,12 @@
           const l = h[s] / (a.width * a.height);
           e -= l * Math.log2(l)
         }
-        document.getElementById('r').innerHTML = 'Analysis Report<br>---------------<br>Number of colors: ' + t + '<br>Entropy rating: ' + e.toFixed(2) + '<br>Image is: Professional<br>---------------<br>**Recommendation: 100 colors or less<br>**Recommendedation: Entropy ~7.5 or less'
+        document.getElementById('r').innerHTML = 'Analysis Report
+                          <br>---------------<br>Number of colors: ' + t + 
+                                            '<br>Entropy rating: ' + e.toFixed(2) + 
+                                            '<br>Image is: Professional<br>---------------
+                                             <br>**Recommendation: 100 colors or less<br>
+                                                 **Recommendation: Entropy ~7.5 or less'
       },
       i.src = e.target.result
     },
