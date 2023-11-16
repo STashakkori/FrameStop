@@ -1,0 +1,52 @@
+<style>
+  body{font-family:sans-serif;background-color:#eee;}.container{display:flex;width:100%;height:90vh;}.viewer,
+  .zoom{flex:1;overflow:hidden;position:relative;}.viewer img{
+        max-width:100%;max-height:100%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  }.zoom{
+         background-repeat:no-repeat;background-position:center;background-size:cover;cursor:zoom-in;
+        }
+</style>
+<input type="file" id="f" onchange="v(this)">
+<div class="container">
+  <div class="viewer" id="v" onclick="z(event)">
+  </div>
+  <div class="zoom" id="z">
+  </div>
+</div>
+<script>
+  function v(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = new Image();
+        img.src = e.target.result;
+        img.onload = function() {
+          document.getElementById('v').innerHTML = '';
+          document.getElementById('v').appendChild(img);
+        };
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+  function z(e) {
+    const z = document.getElementById('z');
+    const v = document.getElementById('v').querySelector('img');
+    if (v) {
+      const r = v.getBoundingClientRect(),
+      x = e.clientX - r.left,
+      y = e.clientY - r.top,
+      sx = x / v.clientWidth,
+      sy = y / v.clientHeight,
+      w = v.naturalWidth,
+      h = v.naturalHeight,
+      f = 2;
+      let ix = (sx * w * f) - w / 4,
+      iy = (sy * h * f) - h / 4;
+      ix = Math.max(0, Math.min(ix, w * f - v.clientWidth));
+      iy = Math.max(0, Math.min(iy, h * f - v.clientHeight));
+      z.style.backgroundImage = 'url(' + v.src + ')';
+      z.style.backgroundSize = w * f + 'px ' + h * f + 'px';
+      z.style.backgroundPosition = '-' + ix + 'px -' + iy + 'px';
+    }
+  }
+</script>
