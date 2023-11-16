@@ -1,0 +1,46 @@
+<style>
+  body{font-family:sans-serif;background-color:gray;}
+</style>
+<input type="file" id="f">
+<button onclick="e()">
+  Encrypt & Download
+</button>
+<script>
+  async
+  function e() {
+    const file = document.getElementById('f').files[0];
+    if (!file) {
+      alert('Select a file.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = async(e) = >{
+      try {
+        const data = e.target.result;
+        const key = await crypto.subtle.generateKey({
+          name: 'AES-GCM',
+          length: 256
+        },
+        true, ['encrypt', 'decrypt']);
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const encrypted = await crypto.subtle.encrypt({
+          name: 'AES-GCM',
+          iv: iv
+        },
+        key, data);
+        const keyData = await crypto.subtle.exportKey('raw', key);
+        download(new Blob([encrypted]), 'encrypted.bin');
+        download(new Blob([keyData]), 'key.bin');
+      } catch(err) {
+        console.error('Error:', err);
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+  function download(blob, filename) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+  }
+</script>
