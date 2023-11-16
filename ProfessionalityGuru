@@ -1,5 +1,5 @@
 <style>
-  body{text-align:center;background-color:#DCEAF5;color:blue;}#r{background-color:#DCEAF5;color:green;}
+  body{text-align:center;background-color:#E0DCF5;color:blue;}#r{background-color:#E0DCF5;color:green;}
 </style>
 <canvas id="c" style="display:none;">
 </canvas>
@@ -8,7 +8,8 @@
 </div>
 <script>
   function u() {
-    const o = new FileReader;
+    const f = document.getElementById('f').files[0],
+    o = new FileReader;
     o.onload = function(e) {
       const i = new Image;
       i.onload = function() {
@@ -20,25 +21,33 @@
         const d = x.getImageData(0, 0, a.width, a.height).data;
         let h = {},
         t = 0,
-        e = 0;
+        e = 0,
+        p = 0;
         for (let n = 0; n < d.length; n += 4) {
           const r = Math.floor(d[n] / 50) * 50 << 16 | Math.floor(d[n + 1] / 50) * 50 << 8 | Math.floor(d[n + 2] / 50) * 50;
-          h[r] ? h[r]++:h[r] = 1
+          h[r] ? h[r]++:h[r] = 1,
+          a < 255 && p++
         }
         for (let s in h) {
           t++;
           const l = h[s] / (a.width * a.height);
           e -= l * Math.log2(l)
         }
-        document.getElementById('r').innerHTML = 'Analysis Report
-                          <br>---------------<br>Number of colors: ' + t + 
-                                            '<br>Entropy rating: ' + e.toFixed(2) + 
-                                            '<br>Image is: Professional<br>---------------
-                                             <br>**Recommendation: 100 colors or less<br>
-                                                 **Recommendation: Entropy ~7.5 or less'
+        let c = 'Possibly Professional';
+        if (t <= 100 && e <= 7.5) c = 'Professional';
+        const s = p / (a.width * a.height) * 100,
+        fmt = f.name.split('.').pop();
+        document.getElementById('r').innerHTML = 'Analysis Report<br>-------------------
+                                          <br><br>Number of colors: ' + t + '<br><br>
+                                                  Entropy: ' + e.toFixed(2) + '<br><br>
+                                                  Transparency: ' + s.toFixed(2) + '%<br><br>
+                                                  File size: ' + (f.size / 1024).toFixed(2) + ' KB<br><br>
+                                                  Dimensions: ' + a.width + 'x' + a.height + ' pixels<br><br>
+                                                  Format: ' + fmt + '<br><br>
+                                                  Image is: ' + c + '<br>-------------------<br>'
       },
       i.src = e.target.result
     },
-    o.readAsDataURL(document.getElementById('f').files[0])
+    o.readAsDataURL(f)
   }
 </script>
