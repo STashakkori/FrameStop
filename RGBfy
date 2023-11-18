@@ -1,0 +1,61 @@
+<style>
+  body{text-align:center;background-color:#F5F5DC;color:blue;}
+</style>
+<canvas id="c" style="display:none;height:500px">
+</canvas>
+<br>
+<input type="range" id="f" min="1" max="100" value="50">
+<br>
+Adjust Rainbow Factor
+<br>
+<input type="file" id="u">
+<br>
+<br>
+<a id="d" download="RainbowFrame.png">
+  APPLY Rainbow Effect
+</a>
+<br>
+<script>
+  document.getElementById('u').addEventListener('change',
+  function(e) {
+    const c = document.getElementById('c'),
+    ctx = c.getContext('2d'),
+    r = new FileReader;
+    r.onload = function(e) {
+      const img = new Image;
+      img.onload = function() {
+        c.width = img.width,
+        c.height = img.height,
+        ctx.drawImage(img, 0, 0),
+        updateImage()
+      },
+      img.src = e.target.result
+    },
+    r.readAsDataURL(e.target.files[0])
+  });
+  function updateImage() {
+    const c = document.getElementById('c'),
+    ctx = c.getContext('2d'),
+    imgData = ctx.getImageData(0, 0, c.width, c.height),
+    data = imgData.data,
+    f = document.getElementById('f').value;
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i],
+      g = data[i + 1],
+      b = data[i + 2],
+      gray = Math.abs(r - g) < 15 && Math.abs(r - b) < 15 && Math.abs(g - b) < 15;
+      x = i / 4 % c.width,
+      w = c.width;
+      if (gray && r > 160) {
+        const hue = (x / w * 360 * f) % 360,
+        hsvToRgb = (h, s, v) = >{
+          let f = (n, k = (n + h / 60) % 6) = >v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
+          return [255 * f(5), 255 * f(3), 255 * f(1)]
+        }; [data[i], data[i + 1], data[i + 2]] = hsvToRgb(hue, 100, 100)
+      }
+    }
+    ctx.putImageData(imgData, 0, 0),
+    document.getElementById('d').href = c.toDataURL('image/png'),
+    document.getElementById('d').style.display = 'block'
+  }
+</script>
